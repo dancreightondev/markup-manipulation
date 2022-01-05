@@ -1,8 +1,8 @@
 # markup-manipulation
 A set of Python programs that manipulate XML and HTML files in various ways. I primarily used these for tasks at work that would otherwise be very mundane to do by hand.
 
-`xml-to-excel.py` — Scans an XML file for specific data and outputs it to an Excel workbook.
-`html-into-xml.py` — Replaces HTML references in an XML file with the corresponding HTML code.
+- `xml-to-excel.py` — Scans an XML file for specific data and outputs it to an Excel workbook.
+- `html-into-xml.py` — Replaces HTML references in an XML file with the corresponding HTML code.
 
 ## `xml-to-excel.py`
 ### Dependencies
