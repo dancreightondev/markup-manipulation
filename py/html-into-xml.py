@@ -1,4 +1,6 @@
 from bs4 import BeautifulSoup as BS
+from pathlib import Path
+import os as OS
 
 def print_xml_from_file(filename):
     print(BS(open(filename).read(), "lxml").prettify())
@@ -27,11 +29,31 @@ def replace_xml_with_html(xml_filename, html_filename):
     obj_to_replace.replaceWith(html)
 
     # Return the modified & prettified XML
-    return xml.prettify()
+    return xml
 
 
 def main():
-    new_xml = replace_xml_with_html("test.xml", "test.html")
-    print(new_xml)
+    # Look at all XML files in the current directory
+    filepaths = Path(OS.getcwd()).rglob("*.xml")
+    for file in filepaths:
+        if not str(file).endswith("imsmanifest.xml"):
+            xml_filename = str(file)
+
+            # Read the XML contents
+            xml = ""
+            with open(xml_filename, "r") as xf:
+                xml_contents = xf.read()
+                xml = BS(xml_contents, "lxml")
+
+            # Find HTML object in XML file
+            html_object = xml.find(attrs={"type" : "text/html"})
+
+            # Get HTML filename from the data attribute on this object
+            html_filename = html_object["data"]
+
+            # Replace HTML object in the XML with the HTML code
+            new_xml = replace_xml_with_html(xml_filename, html_filename).prettify()
+
+            print(f"{new_xml}\n\n\n")
 
 main()
