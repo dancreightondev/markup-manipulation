@@ -28,12 +28,12 @@ def replace_xml_with_html(xml_filename, html_filename):
     # Read the XML contents
     with open(xml_filename, "r") as xf:
         xml_contents = xf.read()
-        xml = BS(xml_contents, "lxml")
+        xml = BS(xml_contents, "xml")
 
     # Read the HTML contents
     with open(html_filename, "r") as hf:
         html_contents = hf.read()
-        html = BS(html_contents, "html.parser")
+        html = BS(html_contents, "xml")
 
     # Find the appropriate content to replace (XML object with attribute type="text/html")
     obj_to_replace = xml.find(attrs={"type" : "text/html"})
@@ -62,7 +62,7 @@ def main():
         xml = ""
         with open(xml_filename, "r") as xf:
             xml_contents = xf.read()
-            xml = BS(xml_contents, "lxml")
+            xml = BS(xml_contents, "xml")
 
         # Find HTML object in XML file
         html_object = xml.find(attrs={"type" : "text/html"})
@@ -71,7 +71,7 @@ def main():
         if html_object is not None:
             html_filename = html_object["data"]
 
-            # Replace HTML object in the XML with the HTML code
+            # Replace the XML's HTML object with the corresponding HTML code
             new_xml = replace_xml_with_html(xml_filename, html_filename).prettify()
 
             # Print success message
