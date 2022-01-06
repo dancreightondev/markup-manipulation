@@ -90,4 +90,7 @@ def main():
             ignored_file = xml_filename.split("\\")[-1]
             print(f"Ignoring {ignored_file} as no HTML reference was found")
 
+        # Space messages out for readability
+        print("\n")
+
 main()
