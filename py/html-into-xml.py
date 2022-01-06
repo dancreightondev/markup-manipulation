@@ -5,6 +5,21 @@ import os as OS
 def print_xml_from_file(filename):
     print(BS(open(filename).read(), "lxml").prettify())
 
+def wrap_content_with_hashes(html, obj):
+
+    # Create a new tag for the hashes at the beginning
+    pre_hashes = html.new_tag("p")
+    pre_hashes.string = "###"
+
+    # Insert the tag at the beginning (position 0)
+    obj.insert(0, pre_hashes)
+
+    # Create a new tag for the hashes at the end
+    end_hashes = html.new_tag("p")
+    end_hashes.string = "###"
+
+    # Insert the tag at the end (append it)
+    obj.append(end_hashes)
 
 def replace_xml_with_html(xml_filename, html_filename):
     
@@ -25,7 +40,11 @@ def replace_xml_with_html(xml_filename, html_filename):
     # Find the appropriate content to replace (XML object with attribute type="text/html")
     obj_to_replace = xml.find(attrs={"type" : "text/html"})
 
-    # Replace XML object with HTML
+    # Edit HTML to add hashes either side of the content
+    # (this is specific to the intended use of this program but is not required for it to run - delete this section or comment it out if it's not needed for you)
+    wrap_content_with_hashes(html, html.find("div"))
+
+    # Replace HTML reference with HTML code in the XML file
     obj_to_replace.replaceWith(html)
 
     # Return the modified & prettified XML
