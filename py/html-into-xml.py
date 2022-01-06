@@ -17,6 +17,7 @@ def wrap_content_with_hashes(html, obj):
 
     # Insert the tag at the end (append it)
     obj.append(end_hashes)
+    
 
 def replace_xml_with_html(xml_filename, html_filename):
     
@@ -49,34 +50,39 @@ def replace_xml_with_html(xml_filename, html_filename):
 
 
 def main():
+    
     # Look at all XML files in the current directory
     filepaths = Path(OS.getcwd()).rglob("*.xml")
     for file in filepaths:
-        if not str(file).endswith("imsmanifest.xml"):
-            xml_filename = str(file)
 
-            # Read the XML contents
-            xml = ""
-            with open(xml_filename, "r") as xf:
-                xml_contents = xf.read()
-                xml = BS(xml_contents, "lxml")
+        # Convert the filename to a string so it can be used elsewhere
+        xml_filename = str(file)
 
-            # Find HTML object in XML file
-            html_object = xml.find(attrs={"type" : "text/html"})
+        # Read the XML contents
+        xml = ""
+        with open(xml_filename, "r") as xf:
+            xml_contents = xf.read()
+            xml = BS(xml_contents, "lxml")
 
-            # Get HTML filename from the data attribute on this object if the object exists
-            if html_object is not None:
-                html_filename = html_object["data"]
+        # Find HTML object in XML file
+        html_object = xml.find(attrs={"type" : "text/html"})
 
-                # Replace HTML object in the XML with the HTML code
-                new_xml = replace_xml_with_html(xml_filename, html_filename).prettify()
+        # Get HTML filename from the data attribute on this object if the object exists
+        if html_object is not None:
+            html_filename = html_object["data"]
 
-                edited_file = xml_filename.split("\\")[-1]
-                print(f"Edited {edited_file} successfully")
-                #print(f"{new_xml}\n")
-                
-            else:
-                ignored_file = xml_filename.split("\\")[-1]
-                print(f"Ignoring {ignored_file} as no HTML reference was found")
+            # Replace HTML object in the XML with the HTML code
+            new_xml = replace_xml_with_html(xml_filename, html_filename).prettify()
+
+            # Print success message
+            edited_file = xml_filename.split("\\")[-1]
+            print(f"Edited {edited_file} successfully")
+
+        #If the object doesn't exist... 
+        else:
+            
+            # Print ignore message
+            ignored_file = xml_filename.split("\\")[-1]
+            print(f"Ignoring {ignored_file} as no HTML reference was found")
 
 main()
