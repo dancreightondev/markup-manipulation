@@ -85,6 +85,10 @@ def main():
 
         #If the object doesn't exist... 
         else:
+
+            # Add ignored files to a list for later auditing
+            ignored_files = []
+            ignored_files.append(xml_filename)
             
             # Print ignore message
             ignored_file = xml_filename.split("\\")[-1]
