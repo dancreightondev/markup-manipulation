@@ -78,6 +78,11 @@ def main():
             edited_file = xml_filename.split("\\")[-1]
             print(f"Edited {edited_file} successfully")
 
+            # Write XML to file
+            with open (xml_filename, "w") as xf:
+                xf.write(new_xml)
+                print(f"Saved {edited_file} successfully")
+
         #If the object doesn't exist... 
         else:
             
