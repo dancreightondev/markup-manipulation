@@ -55,6 +55,12 @@ def main():
                 # Replace HTML object in the XML with the HTML code
                 new_xml = replace_xml_with_html(xml_filename, html_filename).prettify()
 
-                print(f"{new_xml}\n\n\n")
+                edited_file = xml_filename.split("\\")[-1]
+                print(f"Edited {edited_file} successfully")
+                #print(f"{new_xml}\n")
+                
+            else:
+                ignored_file = xml_filename.split("\\")[-1]
+                print(f"Ignoring {ignored_file} as no HTML reference was found")
 
 main()
