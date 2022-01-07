@@ -105,4 +105,4 @@ if confirm.upper() == "Y":
     sys.stdout = open("log.txt", "w")
     main()
     sys.stdout = original_stdout
-    input("Completed.\nSee 'log.txt' for details and any errors.\nPress any key to exit... ")
+    input("\nCompleted.\nSee 'log.txt' for details and any errors.\nPress any key to exit... ")
