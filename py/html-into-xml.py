@@ -99,8 +99,10 @@ def main():
         print("\n")
 
 print(f"Scanning in current directory: {str(OS.getcwd())}\n")
-original_stdout = sys.stdout
-sys.stdout = open("log.txt", "w")
-main()
-sys.stdout = original_stdout
-input("Completed.\nSee 'log.txt' for details and any errors.\nPress any key to exit... ")
+confirm = input("Confirm? (Y/n): ")
+if confirm.upper() == "Y":
+    original_stdout = sys.stdout
+    sys.stdout = open("log.txt", "w")
+    main()
+    sys.stdout = original_stdout
+    input("Completed.\nSee 'log.txt' for details and any errors.\nPress any key to exit... ")
