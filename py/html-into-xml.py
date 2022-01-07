@@ -27,12 +27,12 @@ def replace_xml_with_html(xml_filename, html_filename):
     html = ""
 
     # Read the XML contents
-    with open(xml_filename, "r") as xf:
+    with open(xml_filename, mode="r", encoding="utf-8") as xf:
         xml_contents = xf.read()
         xml = BS(xml_contents, "xml")
 
     # Read the HTML contents
-    with open(html_filename, "r") as hf:
+    with open(html_filename, mode="r", encoding="utf-8") as hf:
         html_contents = hf.read()
         html = BS(html_contents, "xml")
 
@@ -61,7 +61,7 @@ def main():
 
         # Read the XML contents
         xml = ""
-        with open(xml_filename, "r") as xf:
+        with open(xml_filename, mode="r", encoding="utf-8") as xf:
             xml_contents = xf.read()
             xml = BS(xml_contents, "xml")
 
@@ -80,7 +80,7 @@ def main():
             print(f"Edited {edited_file} successfully")
 
             # Write XML to file
-            with open (xml_filename, "w") as xf:
+            with open (xml_filename, mode="w", encoding="utf-8") as xf:
                 xf.write(new_xml)
                 print(f"Saved {edited_file} successfully")
 
