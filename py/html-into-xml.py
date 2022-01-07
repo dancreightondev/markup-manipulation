@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup as BS
 from pathlib import Path
 import os as OS
+import sys
 
 def wrap_content_with_hashes(html, obj):
 
@@ -97,4 +98,7 @@ def main():
         # Space messages out for readability
         print("\n")
 
+sys.stdout = open("log.txt", "w")
 main()
+input("Press any key to exit... ")
+sys.stdout.close()
