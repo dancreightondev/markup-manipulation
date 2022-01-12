@@ -2,6 +2,24 @@ from bs4 import BeautifulSoup as BS
 from pathlib import Path
 import os as OS
 import sys
+import re
+
+
+def find_errant_unicode(string):
+
+    # Define the regular expression to use when parsing
+    regex = "&([^;]+);"
+
+    # Parse string for errant unicode
+    regex_result = re.findall(regex, string)
+    if regex_result is not None:
+        print(f"Errant unicode found: {regex_result}")
+    else:
+        print("No errant unicode found, or regex operation failed")
+
+    # Return the result
+    return regex_result
+
 
 def wrap_content_with_hashes(html, obj):
 
@@ -31,10 +49,16 @@ def replace_xml_with_html(xml_filename, html_filename):
         xml_contents = xf.read()
         xml = BS(xml_contents, "xml")
 
+        # While doing so, search the source for errant unicode for later auditing
+        errant_xml_chars = find_errant_unicode(xml_contents)
+
     # Read the HTML contents
     with open(html_filename, mode="r", encoding="utf-8") as hf:
         html_contents = hf.read()
         html = BS(html_contents, "xml")
+
+        # While doing so, search the source for errant unicode for later auditing
+        errant_html_chars = find_errant_unicode(html_contents)
 
     # Find the appropriate content to replace (XML object with attribute type="text/html")
     obj_to_replace = xml.find(attrs={"type" : "text/html"})
