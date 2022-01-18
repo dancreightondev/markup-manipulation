@@ -1,8 +1,9 @@
 from bs4 import BeautifulSoup as BS
-from pathlib import Path
+import glob
 import os as OS
 import sys
 import re
+import pandas as PD
 
 
 def find_errant_unicode(string):
@@ -12,10 +13,6 @@ def find_errant_unicode(string):
 
     # Parse string for errant unicode
     regex_result = re.findall(regex, string)
-    if regex_result is not None:
-        print(f"Errant unicode found: {regex_result}")
-    else:
-        print("No errant unicode found, or regex operation failed")
 
     # Return the result
     return regex_result
@@ -50,7 +47,7 @@ def replace_xml_with_html(xml_filename, html_filename):
         xml = BS(xml_contents, "xml")
 
         # While doing so, search the source for errant unicode for later auditing
-        errant_xml_chars = find_errant_unicode(xml_contents)
+        xml_u = find_errant_unicode(xml_contents)
 
     # Read the HTML contents
     with open(html_filename, mode="r", encoding="utf-8") as hf:
@@ -58,7 +55,8 @@ def replace_xml_with_html(xml_filename, html_filename):
         html = BS(html_contents, "xml")
 
         # While doing so, search the source for errant unicode for later auditing
-        errant_html_chars = find_errant_unicode(html_contents)
+        html_u = find_errant_unicode(html_contents)
+        u = xml_u + html_u
 
     # Find the appropriate content to replace (XML object with attribute type="text/html")
     obj_to_replace = xml.find(attrs={"type" : "text/html"})
@@ -71,14 +69,50 @@ def replace_xml_with_html(xml_filename, html_filename):
     obj_to_replace.replaceWith(html)
 
     # Return the modified & prettified XML
-    return xml
+    return xml, u
+
+
+def export_to_excel(data_frame, overwrite=False):
+
+    # Set the filename prefix
+    prefix = "html-into-xml.py_output"
+
+    # If overwriting, ...
+    if overwrite:
+        # Set the filepath
+        outfilepath = OS.getcwd() + "\\" + f"{prefix}.xlsx"
+    
+    # If not overwriting, ...
+    else:
+        # Set a new filename iteratively so any previous files are not overwritten
+        filepaths = glob.glob(f"{prefix}*.xlsx")
+        if len(list(filepaths)) == 0:
+            outfilepath = OS.getcwd() + "\\" + f"{prefix}.xlsx"
+        else:
+            outfilepath = OS.getcwd() + "\\" + f"{prefix}{len(list(filepaths))+1}.xlsx"
+
+    # Export to an Excel file
+    data_frame.to_excel(outfilepath, index=False)
+
+    # Return the filepath it was saved to
+    return outfilepath
 
 
 def main():
+
+    # Initialise a DataFrame so data can be exported to Excel
+    headings = ["Filename", "Comment(s)", "Errant unicode character(s)"]
+    xlsx_contents = PD.DataFrame(columns=headings)
+
+    # Initialise an array to store errant unicode characters
+    errant_unicode = []
     
     # Look at all XML files in the current directory
-    filepaths = Path(OS.getcwd()).rglob("*.xml")
+    filepaths = glob.glob("*.xml")
     for file in filepaths:
+
+        # Initialise an array to store any comments about the files we are looking at
+        file_comments = []
 
         # Convert the filename to a string so it can be used elsewhere
         xml_filename = str(file)
@@ -96,37 +130,53 @@ def main():
         if html_object is not None:
             html_filename = html_object["data"]
 
-            # Replace the XML's HTML object with the corresponding HTML code
-            new_xml = replace_xml_with_html(xml_filename, html_filename).prettify()
+            # Replace the XML's HTML object with the corresponding HTML code, and take note of any errant unicode characters
+            new_xml, errant_unicode = replace_xml_with_html(xml_filename, html_filename)
+
+            # Prettify the XML
+            new_xml.prettify()
+
+            # Let the user know if any errant unicode was found
+            if len(errant_unicode) is not 0:
+                comment = f"Errant Unicode characters found in {xml_filename}: {', '.join(errant_unicode)}"
+                print(comment)
+                comment = "Errant Unicode characters found"
+                file_comments.append(comment)
 
             # Print success message
             edited_file = xml_filename.split("\\")[-1]
-            print(f"Edited {edited_file} successfully")
+            print(f"Edited {edited_file} successfully\n")
 
             # Write XML to file
-            with open (xml_filename, mode="w", encoding="utf-8") as xf:
+            '''with open(xml_filename, mode="w", encoding="utf-8") as xf:
                 xf.write(new_xml)
-                print(f"Saved {edited_file} successfully")
+                print(f"Saved {edited_file} successfully\n")'''
 
-        #If the object doesn't exist... 
+        # If the object doesn't exist... 
         else:
-
-            # Add ignored files to a list for later auditing
-            ignored_files = []
-            ignored_files.append(xml_filename)
             
-            # Print ignore message
+            # Let the user know the file was ignored
             ignored_file = xml_filename.split("\\")[-1]
-            print(f"Ignoring {ignored_file} as no HTML reference was found")
+            comment = f"Ignored {ignored_file} as no HTML reference was found\n"
+            print(comment)
+            comment = "Ignored as no HTML reference was found"
+            file_comments.append(comment)
 
-        # Space messages out for readability
-        print("\n")
+        # Make DataFrame row for Excel export
+        data_row = [xml_filename.split("\\")[-1], "; ".join(file_comments), "; ".join(errant_unicode)]
 
-print(f"Scanning in current directory: {str(OS.getcwd())}\n")
+        # Add it to the main DataFrame
+        xlsx_contents.loc[len(xlsx_contents)] = data_row
+
+
+    # Export details to Excel
+    xlsx_filename = export_to_excel(xlsx_contents, overwrite=False)
+    print(f"Exported details to {xlsx_filename}")
+
+
+print(f"This program will look for files in the current directory:\n\n{str(OS.getcwd())}\n")
 confirm = input("Confirm? (Y/n): ")
 if confirm.upper() == "Y":
-    original_stdout = sys.stdout
-    sys.stdout = open("log.txt", "w")
+    print("Starting...\n")
     main()
-    sys.stdout = original_stdout
-    input("\nCompleted.\nSee 'log.txt' for details and any errors.\nPress any key to exit... ")
+    input("\nPress any key to continue... ")

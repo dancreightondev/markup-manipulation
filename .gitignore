@@ -1,6 +1,7 @@
 # Files used for testing
 *.html
 *.xml
+*.xlsx
 log.txt
 
 # Byte-compiled / optimized / DLL files
