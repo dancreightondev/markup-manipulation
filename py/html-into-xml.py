@@ -127,7 +127,7 @@ def main():
         html_object = xml.find(attrs={"type" : "text/html"})
 
         # Get HTML filename from the data attribute on this object if the object exists
-        if html_object is not None:
+        if html_object != None:
             html_filename = html_object["data"]
 
             # Replace the XML's HTML object with the corresponding HTML code, and take note of any errant unicode characters
@@ -137,7 +137,7 @@ def main():
             new_xml.prettify()
 
             # Let the user know if any errant unicode was found
-            if len(errant_unicode) is not 0:
+            if len(errant_unicode) != 0:
                 comment = f"Errant Unicode characters found in {xml_filename}: {', '.join(errant_unicode)}"
                 print(comment)
                 comment = "Errant Unicode characters found"
