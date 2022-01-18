@@ -133,9 +133,6 @@ def main():
             # Replace the XML's HTML object with the corresponding HTML code, and take note of any errant unicode characters
             new_xml, errant_unicode = replace_xml_with_html(xml_filename, html_filename)
 
-            # Prettify the XML
-            new_xml.prettify()
-
             # Let the user know if any errant unicode was found
             if len(errant_unicode) != 0:
                 comment = f"Errant Unicode characters found in {xml_filename}: {', '.join(errant_unicode)}"
@@ -149,7 +146,7 @@ def main():
 
             # Write XML to file
             with open(xml_filename, mode="w", encoding="utf-8") as xf:
-                xf.write(new_xml)
+                xf.write(str(new_xml.prettify()))
                 print(f"Saved {edited_file} successfully\n")
 
         # If the object doesn't exist... 
