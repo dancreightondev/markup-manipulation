@@ -148,9 +148,9 @@ def main():
             print(f"Edited {edited_file} successfully\n")
 
             # Write XML to file
-            '''with open(xml_filename, mode="w", encoding="utf-8") as xf:
+            with open(xml_filename, mode="w", encoding="utf-8") as xf:
                 xf.write(new_xml)
-                print(f"Saved {edited_file} successfully\n")'''
+                print(f"Saved {edited_file} successfully\n")
 
         # If the object doesn't exist... 
         else:
