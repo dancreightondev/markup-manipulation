@@ -126,10 +126,18 @@ def main():
         # Find HTML object in XML file
         html_object = xml.find(attrs={"type" : "text/html"})
 
-        # Get HTML filename from the data attribute on this object if the object exists
+        # If the HTML object exists
         if html_object != None:
+
+            # Get HTML filename from the data attribute on this object 
             html_filename = html_object["data"]
 
+            # Clear `new_xml`
+            new_xml = ""
+            
+            # Reset `errant_unicode`
+            errant_unicode = []
+            
             # Replace the XML's HTML object with the corresponding HTML code, and take note of any errant unicode characters
             new_xml, errant_unicode = replace_xml_with_html(xml_filename, html_filename)
 
