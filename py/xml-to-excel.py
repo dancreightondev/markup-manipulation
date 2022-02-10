@@ -121,53 +121,35 @@ def main():
     # Initialise an array to store the data to go in the spreadsheet
     sheet_data = [] 
     
-    # Attempt to parse the files
-    try:
-        print("Parsing files")
+    # Parse the files
+    print("Parsing files")
 
-        # Iterate through the files in the current directory
-        for file in OS.listdir(OS.getcwd()):
+    # Iterate through the files in the current directory
+    for file in OS.listdir(OS.getcwd()):
 
-            # Only look at the XML files
-            if not file.endswith('.xml'): 
-                continue
+        # Only look at the XML files
+        if not file.endswith('.xml'): 
+            continue
 
-            # Parse the XML file and extract the data we need
-            parsed_data = parse_xml_file(file)
+        # Parse the XML file and extract the data we need
+        parsed_data = parse_xml_file(file)
 
-            # Save the data we need ready for export
-            sheet_data.append(parsed_data)
+        # Save the data we need ready for export
+        sheet_data.append(parsed_data)
 
-    # Error handling     
-    except Exception as e:
-        print(e)
-    except:
-        print("An unknown error occurred")
-
-    # Print success message if no errors occurred
-    else:
-        print("Parsed all files successfully")
+    # Print success message 
+    print("Parsed all files successfully")
     
-    # Attempt to export to Excel
-    try:
-        print("Exporting to a new Excel file")
-
-        # Export the data to an Excel spreadsheet
-        export_to_excel(PD.DataFrame(sheet_data))
-
-    # Error handling
-    except Exception as e:
-        print(e)
-    except:
-        print("An unknown error occurred")
+    # Export the data to an Excel spreadsheet
+    print("Exporting to a new Excel file")
+    export_to_excel(PD.DataFrame(sheet_data))
     
-    # Print success message if no errors occurred
-    else:
-        print("Exported successfully")
+    # Print success message
+    print("Exported successfully")
 
 print(f"This program will look for files in the current directory:\n\n{str(OS.getcwd())}\n")
 confirm = input("Confirm? (Y/n): ")
-if confirm.upper == "Y":
+if confirm.upper() == "Y":
     print("Starting...\n")
     main()
     input("\nPress any key to continue... ")
