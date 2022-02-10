@@ -154,9 +154,9 @@ def main():
             
             # Let the user know the file was ignored
             ignored_file = xml_filename.split("\\")[-1]
-            comment = f"Ignored {ignored_file} as no HTML reference was found\n"
+            comment = f"Ignored editing {ignored_file} as no HTML reference was found\n"
             print(comment)
-            comment = "Ignored as no HTML reference was found"
+            comment = "No HTML reference found"
             file_comments.append(comment)
 
         # Make DataFrame row for Excel export
