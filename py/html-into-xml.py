@@ -1,7 +1,6 @@
 from bs4 import BeautifulSoup as BS
 import glob
 import os as OS
-import sys
 import re
 import pandas as PD
 
