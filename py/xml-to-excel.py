@@ -17,26 +17,6 @@ def make_data_frame(qti_filename, img_filenames, audio_filenames, img_count, aud
     # Return the data frame
     return data_frame
 
-def get_image_names_from_html_file(html_filename):
-    
-    # Open the provided HTML file
-    with open(html_filename) as html:
-        
-        # Parse the HTML content
-        content = BS(html, features="html.parser")
-
-        # Initialise an array to store image filenames
-        filenames = []
-
-        # Iterate through all img objects in the HTML code
-        for attr in content.find_all("img"):
-
-            # Store the filename in the src tag for later
-            filenames.append(attr["src"].split("/", 1)[-1])
-
-    # Return the list of filenames
-    return filenames
-
 def parse_xml_file(xml_filename):
     
     # Parse XML
@@ -66,17 +46,11 @@ def parse_xml_file(xml_filename):
         # Store for processing later
         filenames.append(filename)
 
-    # Store HTML filenames
-    html_filenames = [n for n in filenames if n.endswith(".html")]
+    # Define image extensions
+    img_extensions = (".jpg", ".jpeg", ".jpe", ".jif", ".jfif", ".jfi", ".png", ".gif", ".webp", ".tiff", ".tif", ".bmp", ".dib", ".heif", ".heic", ".svg", ".svgz", ".eps")
 
-    # Initialise an array to store image filenames
-    img_filenames = []
-
-    # Iterate through the HTML files
-    for h in html_filenames:
-
-        # Store image filenames
-        img_filenames.extend(get_image_names_from_html_file(h))
+    # Store image filenames
+    img_filenames = [i for i in filenames if i.endswith(img_extensions)]
     
     # Store MP3 filenames
     audio_filenames = [n for n in filenames if n.endswith(".mp3")]
