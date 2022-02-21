@@ -50,10 +50,10 @@ def parse_xml_file(xml_filename):
     img_extensions = (".jpg", ".jpeg", ".jpe", ".jif", ".jfif", ".jfi", ".png", ".gif", ".webp", ".tiff", ".tif", ".bmp", ".dib", ".heif", ".heic", ".svg", ".svgz", ".eps")
 
     # Store image filenames
-    img_filenames = [i for i in filenames if i.endswith(img_extensions)]
+    img_filenames = [i for i in filenames if i.lower().endswith(img_extensions)]
     
     # Store MP3 filenames
-    audio_filenames = [n for n in filenames if n.endswith(".mp3")]
+    audio_filenames = [n for n in filenames if n.lower().endswith(".mp3")]
 
     # Collate parsed data
     parsed_data = {"QTI filename" : xml_filename,
