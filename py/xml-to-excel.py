@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup as BS
 import glob
 import os as OS
-import xml.etree.ElementTree as ET
+from lxml import etree as ET
 import pandas as PD
 
 def make_data_frame(qti_filename, img_filenames, audio_filenames, img_count, audio_count):
@@ -24,36 +24,47 @@ def parse_xml_file(xml_filename):
     
     # Get the root of the XML element tree
     root = tree.getroot()
-
-    # Object attribute to search for. The objects that link to a file seem to always have the 'data' attribute
-    attr = "data"
     
-    # Find all objects by attribute
-    objs = root.findall(".//*[@{}]".format(attr))
+    # Search for objects with an attribute value containing `images/*` or `audio/*`
+    elements = root.xpath(".//*[@*[contains(.,'images/') or contains(.,'audio/')]]")
+    
+    # Initialise an array to store attributes
+    attributes = []
 
     # Initialise an array to store filenames
     filenames = []
     
-    # Iterate through the found objects
-    for o in objs:
+    # Iterate through matching elements
+    for element in elements:
 
-        # Get filenames from found objects, as per the specified attribute (attr)
-        data = o.attrib[attr]
+        # Iterate through their attributes
+        attributes.append(element.attrib)
+        for attribute in attributes:
 
-        # Tidy up the filename
-        filename = data.split("/", 1)[-1]
+            # Iterate through the attributes' values
+            for value in attribute.values():
 
-        # Store for processing later
-        filenames.append(filename)
+                # Get the image and audio filenames
+                if (value.startswith('images/') or value.startswith('audio/')) and (value.lower() != "audio/mp3"):
+                    if value.lower() != "audio/mp3":
+                        filename = value.split('/', 1)[-1]
+                        filenames.append(filename)
+                    print(filename)
 
     # Define image extensions
     img_extensions = (".jpg", ".jpeg", ".jpe", ".jif", ".jfif", ".jfi", ".png", ".gif", ".webp", ".tiff", ".tif", ".bmp", ".dib", ".heif", ".heic", ".svg", ".svgz", ".eps")
 
     # Store image filenames
     img_filenames = [i for i in filenames if i.lower().endswith(img_extensions)]
+
+    # Remove duplicate image filenames
+    img_filenames = list(dict.fromkeys(img_filenames))
     
-    # Store MP3 filenames
+    # Store audio filenames
     audio_filenames = [n for n in filenames if n.lower().endswith(".mp3")]
+
+    # Remove duplicate audio filenames
+    audio_filenames = list(dict.fromkeys(audio_filenames))
 
     # Collate parsed data
     parsed_data = {"QTI filename" : xml_filename,
