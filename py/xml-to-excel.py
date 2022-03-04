@@ -4,19 +4,6 @@ import os as OS
 from lxml import etree as ET
 import pandas as PD
 
-def make_data_frame(qti_filename, img_filenames, audio_filenames, img_count, audio_count):
-    
-    # Make the data frame according the the provided arguments
-    data_frame = PD.DataFrame({"QTI filename" : qti_filename,
-                   "Image filename(s) in Media Library" : img_filenames,
-                   "Audio file(s) ID" : audio_filenames,
-                   "Number of images in item" : img_count,
-                   "Number of audio files in item" : audio_count},
-                   index=[0])
-    
-    # Return the data frame
-    return data_frame
-
 def parse_xml_file(xml_filename):
     
     # Parse XML
