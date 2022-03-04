@@ -33,9 +33,8 @@ def parse_xml_file(xml_filename):
 
                 # Get the image and audio filenames
                 if (value.startswith('images/') or value.startswith('audio/')) and (value.lower() != "audio/mp3"):
-                    if value.lower() != "audio/mp3":
-                        filename = value.split('/', 1)[-1]
-                        filenames.append(filename)
+                    filename = value.split('/', 1)[-1]
+                    filenames.append(filename)
 
     # Define image extensions
     img_extensions = (".jpg", ".jpeg", ".jpe", ".jif", ".jfif", ".jfi", ".png", ".gif", ".webp", ".tiff", ".tif", ".bmp", ".dib", ".heif", ".heic", ".svg", ".svgz", ".eps")
