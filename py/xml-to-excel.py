@@ -7,7 +7,7 @@ import pandas as PD
 def parse_xml_file(xml_filename):
     
     # Parse XML
-    tree = ET.parse(xml_filename)
+    tree = ET.parse(xml_filename, parser=ET.XMLParser(encoding="cp1252"))
     
     # Get the root of the XML element tree
     root = tree.getroot()
